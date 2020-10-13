@@ -1,0 +1,45 @@
+{{ form_start(form) }}
+<div class="form-group">
+    {{ form_row(form.code, {
+        label: 'Código',
+        attr: {
+            class: 'form-control'
+        }
+    }) }}
+</div>
+
+<div class="form-group">
+    {{ form_row(form.description, {
+        label: 'Descripción ',
+        attr: {
+            class: 'form-control'
+        }
+    }) }}
+</div>
+<div class="form-group">
+    {{ form_row(form.measurement, {
+        label: 'Unidad de Medida ',
+        attr: {
+            class: 'form-control'
+        }
+    }) }}
+</div>
+<div class="form-group">
+    {{ form_row(form.quantity, {
+        label: 'Cantidad Requ...: ',
+        attr: {
+            class: 'form-control'
+        }
+    }) }}
+</div>
+<div class="form-group">
+    {{ form_row(form.priceUnit, {
+        label: 'Precio Unitario: ',
+        attr: {
+            class: 'form-control'
+        }
+    }) }}
+</div>
+
+<button class="btn btn-success" type="submit">{{ button_text }}</button>
+{{ form_end(form) }}

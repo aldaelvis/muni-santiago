@@ -1,0 +1,59 @@
+{% extends 'content.html.twig' %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Entradas</h4>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('entry_new') }}" class="btn btn-primary waves-effect" role="button">
+                        <i class="mdi mdi-plus"></i>Nuevo
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive mb-2">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for entry in entries %}
+                                <tr>
+                                    <td>{{ entry.id }}</td>
+                                    <td>{{ entry.date ? entry.date|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ entry.total }}</td>
+                                    <td>
+                                        <a href="{{ path('entry_show', {'id': entry.id}) }}">show</a>
+                                        <a href="{{ path('entry_edit', {'id': entry.id}) }}">edit</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
