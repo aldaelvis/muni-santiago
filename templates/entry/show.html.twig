@@ -1,30 +1,86 @@
-{% extends 'base.html.twig' %}
+{% extends 'content.html.twig' %}
 
-{% block title %}Entry{% endblock %}
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Entradas</h4>
+            </div>
 
-{% block body %}
-    <h1>Entry</h1>
+            <div class="col-sm-6">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entry.id }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ entry.date ? entry.date|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Total</th>
-                <td>{{ entry.total }}</td>
-            </tr>
-        </tbody>
-    </table>
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('entry_index') }}" class="btn btn-secondary">
+                        <i class="mdi mdi-arrow-left"></i>Regresar</a>
+                </div>
 
-    <a href="{{ path('entry_index') }}">back to list</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fecha">Fecha</label>
+                                <input id="fecha" type="text" disabled class="form-control"
+                                       value="{{ entry.date ? entry.date|date('Y-m-d') : '' }}">
+                            </div>
 
-    <a href="{{ path('entry_edit', {'id': entry.id}) }}">edit</a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="hora">Hora</label>
+                                <input id="hora" type="text" disabled class="form-control"
+                                       value="{{ entry.date ? entry.date|date('H:i:s') : '' }}">
+                            </div>
+                        </div>
+                    </div>
 
-    {{ include('entry/_delete_form.html.twig') }}
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Descripción</td>
+                                    <td>Precio UN</td>
+                                    <td>Cantidad</td>
+                                    <td>Total</td>
+                                </tr>
+                                </thead>
+
+                                <tbody id="js-table-body">
+                                {% for key, d in entry.detailEntries %}
+                                    <tr>
+                                        <td>{{ key + 1 }}</td>
+                                        <td>{{ d.product.description }}</td>
+                                        <td>{{ d.product.priceUnit }}</td>
+                                        <td>{{ d.quantity }}</td>
+                                        <td>{{ d.quantity * d.product.priceUnit }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align: end">Total:</td>
+                                    <td>
+                                        <input class="form-control disabled" readonly
+                                               style="width: 80px !important;"
+                                               type="text" name="totalt" value="{{ entry.total }}" id="js-totalf">
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 {% endblock %}

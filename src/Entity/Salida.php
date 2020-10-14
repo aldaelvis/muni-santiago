@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\EntryRepository;
+use App\Repository\SalidaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=EntryRepository::class)
- * @ORM\Table(name="entries")
+ * @ORM\Entity(repositoryClass=SalidaRepository::class)
  */
-class Entry
+class Salida
 {
     /**
      * @ORM\Id
@@ -31,13 +30,13 @@ class Entry
     private $total;
 
     /**
-     * @ORM\OneToMany(targetEntity=DetailEntry::class, mappedBy="entry")
+     * @ORM\OneToMany(targetEntity=DetalleSalida::class, mappedBy="salida")
      */
-    private $detailEntries;
+    private $detalleSalidas;
 
     public function __construct()
     {
-        $this->detailEntries = new ArrayCollection();
+        $this->detalleSalidas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -57,47 +56,43 @@ class Entry
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTotal()
+    public function getTotal(): ?string
     {
         return $this->total;
     }
 
-    /**
-     * @param mixed $total
-     */
-    public function setTotal($total): void
+    public function setTotal(string $total): self
     {
         $this->total = $total;
+
+        return $this;
     }
 
     /**
-     * @return Collection|DetailEntry[]
+     * @return Collection|DetalleSalida[]
      */
-    public function getDetailEntries(): Collection
+    public function getDetalleSalidas(): Collection
     {
-        return $this->detailEntries;
+        return $this->detalleSalidas;
     }
 
-    public function addDetailEntry(DetailEntry $detailEntry): self
+    public function addDetalleSalida(DetalleSalida $detalleSalida): self
     {
-        if (!$this->detailEntries->contains($detailEntry)) {
-            $this->detailEntries[] = $detailEntry;
-            $detailEntry->setEntry($this);
+        if (!$this->detalleSalidas->contains($detalleSalida)) {
+            $this->detalleSalidas[] = $detalleSalida;
+            $detalleSalida->setSalida($this);
         }
 
         return $this;
     }
 
-    public function removeDetailEntry(DetailEntry $detailEntry): self
+    public function removeDetalleSalida(DetalleSalida $detalleSalida): self
     {
-        if ($this->detailEntries->contains($detailEntry)) {
-            $this->detailEntries->removeElement($detailEntry);
+        if ($this->detalleSalidas->contains($detalleSalida)) {
+            $this->detalleSalidas->removeElement($detalleSalida);
             // set the owning side to null (unless already changed)
-            if ($detailEntry->getEntry() === $this) {
-                $detailEntry->setEntry(null);
+            if ($detalleSalida->getSalida() === $this) {
+                $detalleSalida->setSalida(null);
             }
         }
 

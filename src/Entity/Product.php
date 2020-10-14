@@ -6,13 +6,16 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ *
  */
 class Product
 {
     /**
+     * @Groups("normal")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,26 +23,31 @@ class Product
     private $id;
 
     /**
+     * @Groups("normal")
      * @ORM\Column(type="integer")
      */
     private $code;
 
     /**
+     * @Groups("normal")
      * @ORM\Column(type="string", length=255)
      */
     private $description;
 
     /**
+     * @Groups("normal")
      * @ORM\Column(type="string", length=10)
      */
     private $measurement;
 
     /**
+     * @Groups("normal")
      * @ORM\Column(type="integer")
      */
     private $quantity;
 
     /**
+     * @Groups("normal")
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $price_unit;
@@ -49,9 +57,15 @@ class Product
      */
     private $detailEntries;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DetalleSalida::class, mappedBy="product")
+     */
+    private $detalleSalidas;
+
     public function __construct()
     {
         $this->detailEntries = new ArrayCollection();
+        $this->detalleSalidas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,6 +158,37 @@ class Product
             // set the owning side to null (unless already changed)
             if ($detailEntry->getProduct() === $this) {
                 $detailEntry->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|DetalleSalida[]
+     */
+    public function getDetalleSalidas(): Collection
+    {
+        return $this->detalleSalidas;
+    }
+
+    public function addDetalleSalida(DetalleSalida $detalleSalida): self
+    {
+        if (!$this->detalleSalidas->contains($detalleSalida)) {
+            $this->detalleSalidas[] = $detalleSalida;
+            $detalleSalida->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetalleSalida(DetalleSalida $detalleSalida): self
+    {
+        if ($this->detalleSalidas->contains($detalleSalida)) {
+            $this->detalleSalidas->removeElement($detalleSalida);
+            // set the owning side to null (unless already changed)
+            if ($detalleSalida->getProduct() === $this) {
+                $detalleSalida->setProduct(null);
             }
         }
 

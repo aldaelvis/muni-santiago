@@ -26,7 +26,15 @@ class ProductController extends AbstractController
     public function index(EntityManagerInterface $entityManager, Request $request, int $page = 1)
     {
         $repository = $entityManager->getRepository(Product::class);
-        $paginator = $repository->findAllDesc($page);
+
+        $qdescription = $request->query->get('search');
+
+        if (!is_null($qdescription)) {
+            $paginator = $repository->findDescriptionDesc($page, $qdescription);
+        } else {
+            $paginator = $repository->findAllDesc($page);
+        }
+
         return $this->render('product/index.html.twig', [
             'paginator' => $paginator
         ]);

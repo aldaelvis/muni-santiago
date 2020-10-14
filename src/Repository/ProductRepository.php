@@ -32,15 +32,28 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
-    /*
-    public function findOneBySomeField($value): ?Product
+    public function findProducts($value)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $em = $this->getEntityManager();
+        $dq = $em->createQuery(
+            'SELECT p FROM App\Entity\Product p WHERE p.description LIKE :product'
+        );
+        $dq->setParameter('product', '%' . $value . '%');
+
+        return $dq->getResult();
     }
-    */
+
+    /**
+     * @return Paginator Returns an array of Product objects
+     */
+    public function findDescriptionDesc($page, $description): Paginator
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.description LIKE :description')
+            ->orderBy('p.id', 'DESC')
+            ->setParameter('description', '%' . $description . '%');
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
 }

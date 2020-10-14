@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Entry;
+use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,6 +19,38 @@ class EntryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Entry::class);
     }
+
+    /**
+     * @return Paginator Returns an array of Product objects
+     */
+    public function findAllDesc($page): Paginator
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->join('e.detailEntries', 'd')
+            ->join('d.product', 'p')
+            ->distinct()
+            ->orderBy('e.id', 'DESC');
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
+    /**
+     * @return Paginator Returns an array of Product objects
+     */
+    public function findAllBetweenDesc($page, $date1, $date2): Paginator
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->join('e.detailEntries', 'd')
+            ->join('d.product', 'p')
+            ->where('e.date > :date1')
+            ->andWhere('e.date <= :date2')
+            ->orderBy('e.id', 'DESC')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2);
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
 
     // /**
     //  * @return Entry[] Returns an array of Entry objects

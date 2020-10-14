@@ -5,6 +5,143 @@
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script>
         $(".select2").select2();
+
+        let _sproduct = $("#js-product");
+
+        _sproduct.select2({
+            ajax: {
+                dataType: 'json',
+                type: "GET",
+                url: 'https://127.0.0.1:8000/entry/product',
+                data: function (params) {
+                    return {
+                        search: params.term
+                    };
+                },
+
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.description,
+                                slug: item.description,
+                                price: item.priceUnit,
+                                id: item.id
+                            }
+                        })
+                    }
+                },
+                cache: true,
+            },
+
+        });
+
+        let txtPrice = document.getElementById('js-price-product');
+        let txtQuantity = document.getElementById('quantity');
+        let txtId = document.getElementById('js-id-product');
+        _sproduct.on('change', function () {
+            const data = _sproduct.select2('data')[0];
+            txtPrice.value = data.price;
+            txtId.value = data.id;
+        })
+
+        let _bodyTable = document.getElementById('js-table-body');
+        let totalFtd = document.getElementById('js-totalf');
+        let constador = 0;
+        let products = [];
+        let totalF = 0.0;
+        txtQuantity.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+
+                let id = txtId.value;
+                let descripcion = _sproduct.select2('data')[0].text;
+                let price = txtPrice.value;
+                let quantity = txtQuantity.value;
+                let subtotal = price * quantity;
+                for (let i = 0; i < products.length; i++) {
+                    if (products[i].id === id) {
+                        alert('El articulo ya esta en la lista, edite la cantidad desde la tabla');
+                        txtQuantity.value = '';
+                        txtPrice.value = '';
+                        _sproduct.select2('data', null);
+                        return;
+                    }
+                }
+
+                products.push({
+                    'id': id,
+                    'total': subtotal,
+                    'price': price,
+                    'quantity': quantity,
+                });
+                let html = `
+<tr>
+<td>${constador + 1}</td>
+<td hidden="hidden">
+<input type="hidden" value="${id}" name="idt[${constador}]">
+</td>
+<td>${descripcion}</td>
+<td>${price}</td>
+<td>
+<input name="quantityt[${constador}]" onkeyup="getItem(${constador})" type="number" value="${quantity}" class="form-control" style="width: 80px !important;">
+</td>
+<td id="js-total-table-${constador}">${subtotal}</td>
+</tr>`;
+                $(_bodyTable).append(html);
+                //---
+                txtQuantity.value = '';
+                txtPrice.value = '';
+
+                _sproduct.select2('data', null);
+                constador++;
+                calcularTotalF();
+
+                console.log(products)
+            }
+        })
+
+        function calcularTotalF() {
+            for (let i = 0; i < products.length; i++) {
+                totalF += products[i].total;
+            }
+            totalFtd.value = totalF;
+            totalF = 0;
+        }
+
+        let quantityTable = document.getElementById("js-quantity-table");
+        if (quantityTable !== null) {
+            quantityTable.addEventListener('keyup', (e) => {
+                e.preventDefault()
+                console.log("evento....")
+                calcularTotalF();
+            })
+        }
+
+        function getItem(contador) {
+            let q = $('input[name="quantityt[' + contador + ']"]').val()
+            let id = $('input[name="idt[' + contador + ']"]').val()
+            let totalT = document.getElementById('js-total-table-' + contador);
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    products[i].quantity = q;
+                    products[i].total = q * products[i].price;
+                    totalT.innerText = products[i].total;
+                    calcularTotalF();
+                    console.log(totalT);
+                }
+            }
+            // calcularTotalF();
+            console.log(products);
+        }
+
+        let btnGuardar = document.getElementById("btnGuardar");
+        btnGuardar.addEventListener('keydown', (e) => {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                return false;
+            }
+        })
     </script>
 {% endblock %}
 {% block contenido %}
@@ -29,7 +166,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="" method="post">
+                    <form action="{{ path('entry_new') }}" method="post" onkeydown="return event.key != 'Enter';">
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
@@ -42,7 +179,17 @@
                             </div>
                             <div class="col-md-2">
                                 <label for="quantity">Cantidad</label>
-                                <input type="number" class="form-control" name="quantity" id="quantity">
+                                <input type="text" class="form-control" name="quantity" id="quantity">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="js-price-product">Precio</label>
+                                    <input type="text" class="form-control" id="js-price-product" disabled>
+                                    <input type="hidden" id="js-id-product">
+                                </div>
                             </div>
                         </div>
 
@@ -59,43 +206,26 @@
                                     </tr>
                                     </thead>
 
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <button class="btn btn-sm btn-danger">
-                                                <i class="mdi mdi-window-close"></i>
-                                            </button>
-                                        </td>
-                                        <td>METAL QUIRURGICO</td>
-                                        <td>25.00</td>
-                                        <td>2</td>
-                                        <td>50.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><button class="btn btn-sm btn-danger">
-                                                <i class="mdi mdi-window-close"></i>
-                                            </button></td>
-                                        <td>METAL QUIRURGICO</td>
-                                        <td>25.00</td>
-                                        <td>2</td>
-                                        <td>50.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td><button class="btn btn-sm btn-danger">
-                                                <i class="mdi mdi-window-close"></i>
-                                            </button></td>
-                                        <td>METAL QUIRURGICO</td>
-                                        <td>25.00</td>
-                                        <td>2</td>
-                                        <td>50.00</td>
-                                    </tr>
-                                    <tr>
-
-                                        <td colspan="4" style="text-align: end">Total:</td>
-                                        <td>100.30</td>
-                                    </tr>
+                                    <tbody id="js-table-body">
                                     </tbody>
+
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4" style="text-align: end">Total:</td>
+                                        <td>
+                                            <input class="form-control disabled" readonly
+                                                   style="width: 80px !important;"
+                                                   type="text" name="totalt" value="0.00" id="js-totalf">
+                                        </td>
+                                    </tr>
+                                    </tfoot>
                                 </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button id="btnGuardar" type="submit" class="btn btn-success">Guardar</button>
                             </div>
                         </div>
                     </form>
