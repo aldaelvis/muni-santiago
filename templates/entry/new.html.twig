@@ -8,96 +8,100 @@
 
         let _sproduct = $("#js-product");
 
-        _sproduct.select2({
-            ajax: {
-                dataType: 'json',
-                type: "GET",
-                url: 'https://127.0.0.1:8000/entry/product',
-                data: function (params) {
-                    return {
-                        search: params.term
-                    };
-                },
+        let txtPrice = $("#js-price-product");
+        let txtQuantity = $("#quantity");
+        let txtId = $("#js-id-product");
+        let txtName = $("#name");
 
-                processResults: function (data) {
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                text: item.description,
-                                slug: item.description,
-                                price: item.priceUnit,
-                                id: item.id
-                            }
-                        })
-                    }
-                },
-                cache: true,
-            },
+        let _price = 0.0;
+        let _id = 0;
 
-        });
-
-        let txtPrice = document.getElementById('js-price-product');
-        let txtQuantity = document.getElementById('quantity');
-        let txtId = document.getElementById('js-id-product');
         _sproduct.on('change', function () {
-            const data = _sproduct.select2('data')[0];
-            txtPrice.value = data.price;
-            txtId.value = data.id;
+            const valor = this.value
+            const data = valor.split("_")
+
+            _price = data[1]
+            _id = data[0]
+            txtPrice.val(_price)
+            txtId.val(_id);
+
         })
 
         let _bodyTable = document.getElementById('js-table-body');
         let totalFtd = document.getElementById('js-totalf');
-        let constador = 0;
+        let contador = 0;
         let products = [];
         let totalF = 0.0;
-        txtQuantity.addEventListener('keyup', (e) => {
-            if (e.keyCode === 13) {
-                e.preventDefault();
 
-                let id = txtId.value;
-                let descripcion = _sproduct.select2('data')[0].text;
-                let price = txtPrice.value;
-                let quantity = txtQuantity.value;
-                let subtotal = price * quantity;
-                for (let i = 0; i < products.length; i++) {
-                    if (products[i].id === id) {
-                        alert('El articulo ya esta en la lista, edite la cantidad desde la tabla');
-                        txtQuantity.value = '';
-                        txtPrice.value = '';
-                        _sproduct.select2('data', null);
-                        return;
-                    }
+        let addProduct = $("#addProduct");
+
+
+        function addItems() {
+            if (!_sproduct.val().length) {
+                alert('Selecciona un Articulo');
+                txtPrice.value = '';
+                return;
+            }
+
+            let id = txtId.val();
+            let descripcion = _sproduct.select2('data')[0].text;
+            let price = parseFloat(txtPrice.val());
+            let quantity = parseInt(txtQuantity.val());
+            let subtotal = Math.round(price * quantity).toFixed(2);
+
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    alert('El articulo ya esta en la lista, edite la cantidad desde la tabla');
+                    txtQuantity.val('');
+                    txtPrice.val('');
+                    _sproduct.val('');
+                    _sproduct.trigger('change');
+                    return;
                 }
+            }
 
-                products.push({
-                    'id': id,
-                    'total': subtotal,
-                    'price': price,
-                    'quantity': quantity,
-                });
-                let html = `
-<tr>
-<td>${constador + 1}</td>
+            products.push({
+                'id': id,
+                'total': parseFloat(subtotal),
+                'price': price,
+                'quantity': quantity,
+            });
+            let html = `
+<tr id="js-tr-product-${contador}">
+<td><button id="btn-delete" onclick="deleteRow(${contador})" type="button" class="btn btn-sm btn-danger">
+<i class="mdi mdi-window-close"></i>
+</button></td>
 <td hidden="hidden">
-<input type="hidden" value="${id}" name="idt[${constador}]">
+<input type="hidden" value="${id}" name="idt[]" id="idt-${contador}">
 </td>
 <td>${descripcion}</td>
 <td>${price}</td>
 <td>
-<input name="quantityt[${constador}]" onkeyup="getItem(${constador})" type="number" value="${quantity}" class="form-control" style="width: 80px !important;">
+<input name="quantityt[]" id="quantityt-${contador}"
+onkeyup="getItem(${contador})" type="number" value="${quantity}" class="form-control" style="width: 80px !important;">
 </td>
-<td id="js-total-table-${constador}">${subtotal}</td>
+<td id="js-total-table-${contador}">${subtotal}</td>
 </tr>`;
-                $(_bodyTable).append(html);
-                //---
-                txtQuantity.value = '';
-                txtPrice.value = '';
+            $(_bodyTable).append(html);
+            //---
+            txtQuantity.val('');
+            txtPrice.val('');
 
-                _sproduct.select2('data', null);
-                constador++;
-                calcularTotalF();
+            _sproduct.val('');
+            _sproduct.trigger('change');
+            contador++;
+            calcularTotalF();
+        }
 
-                console.log(products)
+        addProduct.click(function (e) {
+            e.preventDefault();
+            addItems();
+        });
+
+        txtQuantity.on('keyup', (e) => {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                addItems();
             }
         })
 
@@ -105,8 +109,11 @@
             for (let i = 0; i < products.length; i++) {
                 totalF += products[i].total;
             }
-            totalFtd.value = totalF;
+
+            totalFtd.value = Math.round(totalF).toFixed(2);
             totalF = 0;
+
+            console.log(products)
         }
 
         let quantityTable = document.getElementById("js-quantity-table");
@@ -119,20 +126,20 @@
         }
 
         function getItem(contador) {
-            let q = $('input[name="quantityt[' + contador + ']"]').val()
-            let id = $('input[name="idt[' + contador + ']"]').val()
+            let q = parseInt($('#quantityt-' + contador).val());
+            let id = $('#idt-' + contador).val()
             let totalT = document.getElementById('js-total-table-' + contador);
             for (let i = 0; i < products.length; i++) {
                 if (products[i].id === id) {
                     products[i].quantity = q;
-                    products[i].total = q * products[i].price;
+                    products[i].total = parseFloat(Math.round(q * products[i].price).toFixed(2));
+
                     totalT.innerText = products[i].total;
                     calcularTotalF();
                     console.log(totalT);
                 }
             }
-            // calcularTotalF();
-            console.log(products);
+
         }
 
         let btnGuardar = document.getElementById("btnGuardar");
@@ -142,6 +149,19 @@
                 return false;
             }
         })
+
+        function deleteRow(contador) {
+            let parentTr = $("#js-tr-product-" + contador)
+            let id = $('#idt-' + contador).val()
+            parentTr.remove()
+
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    products.splice(i, 1)
+                    calcularTotalF()
+                }
+            }
+        }
     </script>
 {% endblock %}
 {% block contenido %}
@@ -168,22 +188,39 @@
                 <div class="card-body">
                     <form action="{{ path('entry_new') }}" method="post" onkeydown="return event.key != 'Enter';">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="js-product">Selecciona articulo</label>
                                     <select name="product" class="form-control select2 select2-hidden-accessible"
                                             id="js-product">
-                                        <option>Select</option>
+                                        <option value="" selected>Select</option>
+                                        {% for p in products %}
+                                            <option value="{{ p.id ~ '_' ~ p.priceUnit }}">{{ p.description }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <label for="quantity">Cantidad</label>
-                                <input type="text" class="form-control" name="quantity" id="quantity">
-                            </div>
+
                         </div>
 
                         <div class="row">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label for="name">Descripción(¿De donde ?)</label>
+                                    <input type="text" name="name" class="form-control" id="name">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="quantity">Cantidad</label>
+                                    <input type="text" class="form-control" name="quantity" id="quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
                             <div class="col-4">
                                 <div class="form-group">
                                     <label for="js-price-product">Precio</label>
@@ -191,18 +228,25 @@
                                     <input type="hidden" id="js-id-product">
                                 </div>
                             </div>
+
+                            <div class="col-4 mb-0 ">
+                                <button class="btn  btn-info mt-2" role="button" id="addProduct">
+                                    +
+                                </button>
+                            </div>
                         </div>
+
 
                         <div class="row">
                             <div class="col-12">
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <td></td>
-                                        <td>Descripción</td>
-                                        <td>Precio UN</td>
-                                        <td>Cantidad</td>
-                                        <td>Total</td>
+                                        <th></th>
+                                        <th>Descripción</th>
+                                        <th>Precio UN</th>
+                                        <th>Cantidad</th>
+                                        <th>Total</th>
                                     </tr>
                                     </thead>
 

@@ -26,6 +26,11 @@ class Entry
     private $date;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $total;
@@ -48,6 +53,22 @@ class Entry
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 
     public function setDate(\DateTimeInterface $date): self

@@ -51,6 +51,32 @@ class EntryRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
+    /**
+     * @return Entry[] Returns an array of Entry objects
+     */
+    public function findAllBetweenReporteDesc($date1, $date2, $date3)
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->join('e.detailEntries', 'd')
+            ->join('d.product', 'p')
+            ->orderBy('e.id', 'DESC');
+
+
+        if ($date1 !== null && $date2 !== null) {
+            $qb->where('e.date > :date1')
+                ->andWhere('e.date <= :date2')
+                ->setParameter('date1', $date1)
+                ->setParameter('date2', $date2);
+        }
+        if (null !== $date3) {
+            $qb->andWhere('e.date LIKE :date3')
+                ->setParameter('date3', '%' . $date3 . '%');
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 
     // /**
     //  * @return Entry[] Returns an array of Entry objects

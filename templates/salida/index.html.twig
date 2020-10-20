@@ -1,0 +1,126 @@
+{% extends 'content.html.twig' %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Salidas</h4>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('salida_new') }}" class="btn btn-primary waves-effect" role="button">
+                        <i class="mdi mdi-plus"></i>Nuevo
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="" method="get">
+                        <div class="row align-items-center mb-2">
+
+                            <div class="col-md-2">
+                                <label for="">
+                                    Filtrar entre fechas:
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" name="date1">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" name="date2">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-secondary">Buscar</button>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="table-responsive mb-2">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key, salida in paginator.results %}
+                                <tr>
+                                    <td>{{ key + 1 }}</td>
+                                    <td>{{ salida.date ? salida.date|date('d/m/Y') : '' }}</td>
+                                    <td>{{ salida.date ? salida.date|date('H:i:s') : '' }}</td>
+                                    <td>{{ salida.total }}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-info"
+                                           href="{{ path('salida_show', {'id': salida.id}) }}">
+                                            <i class="mdi mdi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        {% if paginator.hasToPaginate %}
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    {% if paginator.hasPreviousPage %}
+                                        <li class="page-item"><a
+                                                    href="{{ path('salida_index', {page: paginator.previousPage}) }}"
+                                                    rel="previous" class="page-link">Previous
+                                            </a></li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a href="#" tabindex="-1" class="page-link">Previous</a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for i in 1..paginator.lastPage %}
+                                        {% if i == paginator.currentPage %}
+                                            <li class="page-item active">
+                                                <a class="page-link"
+                                                   href="{{ path('salida_index', {page: i}) }}">{{ i }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li><a class="page-link"
+                                                   href="{{ path('salida_index', {page: i}) }}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if paginator.hasNextPage %}
+                                        <li class="page-item next"><a
+                                                    href="{{ path('salida_index', {page: paginator.nextPage}) }}"
+                                                    rel="next" class="page-link">Next</a></li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a href="#" class="page-link">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

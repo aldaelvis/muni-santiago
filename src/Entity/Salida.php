@@ -25,6 +25,11 @@ class Salida
     private $date;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $total;
@@ -54,6 +59,22 @@ class Salida
         $this->date = $date;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 
     public function getTotal(): ?string

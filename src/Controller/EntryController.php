@@ -44,33 +44,41 @@ class EntryController extends AbstractController
 
     /**
      * @Route("/new", name="entry_new", methods={"GET","POST"})
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function new(EntityManagerInterface $em, Request $request): Response
     {
 
         $entry = new Entry();
 
+        $products = $em
+            ->getRepository(Product::class)
+            ->findAll();
+
         if ($request->getMethod() == Request::METHOD_POST) {
             $idt = $request->request->get('idt');
             $quantityt = $request->request->get('quantityt');
             $total = $request->request->get('totalt');
+            $name = $request->request->get('name');
 
             if (is_null($idt) || is_null($quantityt)) {
                 $this->addFlash('error', 'No selecciono ningun articulo');
             } else if (is_null($total)) {
                 $this->addFlash('error', 'Error de total de articulos');
+            } else if (is_null($name)) {
+                $this->addFlash('error', 'Error ponga el descripcion de la salida ☹');
             } else {
                 $em->getConnection()->beginTransaction();
                 try {
                     $entry->setDate(new \DateTime());
                     $entry->setTotal($total);
+                    $entry->setName($name);
 
                     $count = 0;
                     while ($count < count($request->request->get('idt'))) {
                         $detail = new DetailEntry();
                         $product = $em->getRepository(Product::class)->find($idt[$count]);
                         $detail->setProduct($product);
+
                         $detail->setEntry($entry);
                         $detail->setQuantity($quantityt[$count]);
                         $em->persist($detail);
@@ -87,7 +95,9 @@ class EntryController extends AbstractController
             }
         }
 
-        return $this->render('entry/new.html.twig', []);
+        return $this->render('entry/new.html.twig', [
+            'products' => $products,
+        ]);
     }
 
     /**

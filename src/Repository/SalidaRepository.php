@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Salida;
+use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,60 @@ class SalidaRepository extends ServiceEntityRepository
         parent::__construct($registry, Salida::class);
     }
 
-    // /**
-    //  * @return Salida[] Returns an array of Salida objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Paginator Returns an array of Product objects
+     */
+    public function findAllDesc($page): Paginator
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('s')
+            ->join('s.detalleSalidas', 'd')
+            ->join('d.product', 'p')
+            ->distinct()
+            ->orderBy('s.id', 'DESC');
 
-    /*
-    public function findOneBySomeField($value): ?Salida
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return (new Paginator($qb))->paginate($page);
     }
-    */
+
+    /**
+     * @return Paginator Returns an array of Product objects
+     */
+    public function findAllBetweenDesc($page, $date1, $date2): Paginator
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->join('s.detalleSalidas', 'd')
+            ->join('d.product', 'p')
+            ->where('s.date > :date1')
+            ->andWhere('s.date <= :date2')
+            ->orderBy('s.id', 'DESC')
+            ->setParameter('date1', $date1)
+            ->setParameter('date2', $date2);
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
+    /**
+     * @return Salida[] Returns an array of DetalleSalida objects
+     */
+    public function findAllBetweenReporteDesc($date1, $date2, $date3)
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->join('s.detalleSalidas', 'd')
+            ->join('d.product', 'p')
+            ->orderBy('s.id', 'DESC');
+
+        if ($date1 !== null && $date2 !== null) {
+            $qb->where('s.date > :date1')
+                ->andWhere('s.date <= :date2')
+                ->setParameter('date1', $date1)
+                ->setParameter('date2', $date2);
+        }
+        if (null !== $date3) {
+            $qb->andWhere('s.date LIKE :date3')
+                ->setParameter('date3', '%' . $date3 . '%');
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

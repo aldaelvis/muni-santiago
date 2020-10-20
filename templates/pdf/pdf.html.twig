@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Reportes</title>
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<h3>Reporte de salidas y entradas de :
+    {% if fecha !='' %}
+        {{ fecha }}
+    {% elseif fechaentre != '' %}
+        {{ fechaentre }}
+    {% endif %}
+</h3>
+<h5 class="card-title">Salidas: </h5>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <tr>
+            <th>O/C</th>
+            <th>Descripción</th>
+            <th>Unidad</th>
+            <th>Precio Unit.</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Descripcion Salida</th>
+            <th>Valorizacion</th>
+        </tr>
+        {% set totalF = 0.0 %}
+        {% for s in salidas %}
+            {% for d  in s.detalleSalidas %}
+                <tr>
+                    <td>{{ d.product.code }}</td>
+                    <td>{{ d.product.description }}</td>
+                    <td>{{ d.product.measurement }}</td>
+                    <td>{{ d.product.priceUnit }}</td>
+                    <td>{{ d.quantity }}</td>
+                    <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>S/. {{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                </tr>
+            {% endfor %}
+            {% set totalF = s.total + totalF %}
+        {% endfor %}
+
+        <tr>
+            <td style="text-align: end" colspan="7">Total de Salidas</td>
+            <td class="font-weight-bold bg-warning">S/. {{ totalF|number_format(2, '.') }}</td>
+        </tr>
+    </table>
+</div>
+
+<h5 class="card-title">Entradas: </h5>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <tr>
+            <th>O/C</th>
+            <th>Descripción</th>
+            <th>Unidad</th>
+            <th>Precio Unit.</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Descripcion Entrada</th>
+            <th>Valorizacion</th>
+        </tr>
+        {% set totalFE = 0.0 %}
+        {% for s in entradas %}
+            {% for d  in s.detailEntries %}
+                <tr>
+                    <td>{{ d.product.code }}</td>
+                    <td>{{ d.product.description }}</td>
+                    <td>{{ d.product.measurement }}</td>
+                    <td>{{ d.product.priceUnit }}</td>
+                    <td>{{ d.quantity }}</td>
+                    <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>S/.{{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                </tr>
+            {% endfor %}
+            {% set totalFE = s.total + totalF %}
+        {% endfor %}
+
+        <tr>
+            <td style="text-align: end" colspan="7">Total de Salidas</td>
+            <td class="font-weight-bold bg-warning">S/. {{ totalFE|number_format(2, '.') }}</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

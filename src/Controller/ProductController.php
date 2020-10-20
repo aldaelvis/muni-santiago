@@ -15,13 +15,12 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class ProductController
  * @package App\Controller
- * @Route("/product", name="product")
  */
 class ProductController extends AbstractController
 {
 
     /**
-     * @Route("/{page<[1-9]\d*>}", name="_index")
+     * @Route("product/{page<[1-9]\d*>}", name="product_index")
      */
     public function index(EntityManagerInterface $entityManager, Request $request, int $page = 1)
     {
@@ -41,7 +40,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="_new")
+     * @Route("product/new", name="product_new")
      */
     public function nuevo(EntityManagerInterface $entityManager, Request $request)
     {
@@ -61,7 +60,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="_edit")
+     * @Route("product/edit/{id}", name="product_edit")
      */
     public function editar(Product $product, Request $request, EntityManagerInterface $entityManager)
     {
@@ -83,7 +82,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}", name="_delete", methods={"DELETE"})
+     * @Route("product/delete/{id}", name="product_delete", methods={"DELETE"})
      */
     public function eliminar(Request $request, Product $product, EntityManagerInterface $entityManager)
     {

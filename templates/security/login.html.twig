@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/metisMenu.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/icons.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block body %}
+
+    <div class="wrapper-page">
+        <div class="card overflow-hidden account-card mx-3">
+            <div class="bg-primary p-4 text-white text-center position-relative">
+                <h4 class="font-20 m-b-5">Bienvenido</h4>
+                <p class="text-white-50 mb-4">Logueese para acceder al almacen.</p>
+            </div>
+
+            <div class="account-card-content">
+                <form method="post" class="form-horizontal m-t-30">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="inputEmail">Usuario</label>
+                        <input type="text" value="{{ last_username }}" name="username" id="inputEmail"
+                               class="form-control" required
+                               autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control" required>
+                    </div>
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+
+                    {#
+                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                    See https://symfony.com/doc/current/security/remember_me.html
+
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Remember me
+                        </label>
+                    </div>
+                    #}
+
+                    <div class="form-group row m-t-20">
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary w-md waves-effect waves-light" type="submit">
+                                Acceder
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <!-- jQuery  -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/metisMenu.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.slimscroll.js') }}"></script>
+    <script src="{{ asset('js/waves.min.js') }}"></script>
+
+    <!-- App js -->
+    <script src="{{ asset('js/app.js') }}"></script>
+{% endblock %}

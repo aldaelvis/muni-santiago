@@ -1,0 +1,260 @@
+{% extends 'content.html.twig' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script>
+        $(".select2").select2();
+
+        let _dataProduct = $("#js-product")
+        let txtPrice = $("#js-price-product")
+        let txtId = $("#js-id-product")
+        let txtQuantity = $('#quantity')
+        let totalFtd = $('#js-totalf')
+        let _bodyTable = document.getElementById('js-table-body')
+        let addProduct = $("#addProduct");
+
+        let _price = 0.0;
+        let _id = 0;
+
+        _dataProduct.on('change', function (e) {
+            const valor = this.value
+            const data = valor.split("_")
+            _price = data[1];
+            _id = data[0];
+            txtId.val(_id)
+            txtPrice.val(_price)
+
+            txtQuantity.focus()
+        })
+
+        let contador = 1;
+        let products = [];
+        let totalF = 0.0;
+
+        function addItems() {
+            if (!_dataProduct.val().length) {
+                alert('Selecciona un Articulo');
+                txtPrice.value = '';
+                return;
+            }
+            console.log(contador);
+
+            let id = txtId.val()
+            let descripcion = _dataProduct.select2('data')[0].text
+            let price = parseFloat(txtPrice.val());
+            let quantity = parseInt(txtQuantity.val());
+            let subtotal = Math.round(price * quantity).toFixed(2)
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    alert('El articulo ya esta en la lista, edite la cantidad desde la tabla')
+                    txtQuantity.val('')
+                    txtPrice.val('')
+                    _dataProduct.val('');
+                    _dataProduct.trigger('change');
+                    return
+                }
+            }
+
+            products.push({
+                'id': id,
+                'total': parseFloat(subtotal),
+                'price': price,
+                'quantity': quantity,
+            });
+            let html = `
+<tr id="js-tr-product-${contador}">
+<td>
+<button id="btn-delete" onclick="deleteRow(${contador})" type="button" class="btn btn-sm btn-danger">
+<i class="mdi mdi-window-close"></i>
+</button>
+</td>
+<td hidden="hidden">
+<input type="hidden" value="${id}" name="idt[]" id="idt-${contador}">
+</td>
+<td>${descripcion}</td>
+<td>${price}</td>
+<td>
+<input name="quantityt[]" id="quantityt-${contador}" onkeyup="getItem(${contador})"
+    type="number" value="${quantity}" class="form-control" style="width: 80px !important;">
+</td>
+<td id="js-total-table-${contador}">${subtotal}</td>
+</tr>`;
+            $(_bodyTable).append(html);
+
+            calcularTotalF()
+            //---
+            txtQuantity.val('')
+            txtPrice.val('')
+
+            _dataProduct.val('');
+            _dataProduct.trigger('change');
+            contador++;
+        }
+
+        txtQuantity.on('keyup', (e) => {
+            if (e.keyCode === 13) {
+                e.preventDefault()
+                addItems();
+            }
+        })
+
+        addProduct.click(function (e) {
+            e.preventDefault();
+            addItems();
+        });
+
+        function calcularTotalF() {
+            console.log(products)
+            for (let i = 0; i < products.length; i++) {
+                totalF += products[i].total
+            }
+            totalFtd.val(Math.round(totalF).toFixed(2))
+            totalF = 0
+        }
+
+        function getItem(contador) {
+            let q = $('#quantityt-' + contador).val()
+            let id = $('#idt-' + contador).val()
+            let totalT = document.getElementById('js-total-table-' + contador);
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    products[i].quantity = q;
+                    products[i].total = parseFloat(Math.round(q * products[i].price).toFixed(2));
+                    totalT.innerText = products[i].total;
+                    calcularTotalF();
+                }
+            }
+        }
+
+
+        function deleteRow(contadors) {
+            let parentTr = $("#js-tr-product-" + contadors)
+            let id = $('#idt-' + contadors).val()
+            parentTr.remove()
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].id === id) {
+                    products.splice(i, 1)
+                    calcularTotalF()
+                }
+            }
+        }
+
+    </script>
+{% endblock %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Salidas</h4>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('salida_index') }}" class="btn btn-secondary">
+                        <i class="mdi mdi-arrow-left"></i>Regresar
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ path('salida_new') }}" method="post" onkeydown="return event.key != 'Enter';">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="js-product">Selecciona articulo</label>
+                                    <select name="product" class="form-control select2 select2-hidden-accessible"
+                                            id="js-product">
+                                        <option selected value="">Select</option>
+                                        {% for p in products %}
+                                            <option value="{{ p.id ~ '_' ~ p.priceUnit }}">{{ p.description }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label for="name">Descripción (¿A donde?)</label>
+                                    <input type="text" name="name" class="form-control" id="name">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="quantity">Cantidad</label>
+                                    <input type="text" class="form-control" name="quantity" id="quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="js-price-product">Precio</label>
+                                    <input type="text" class="form-control" id="js-price-product" disabled>
+                                    <input type="hidden" id="js-id-product">
+                                </div>
+                            </div>
+
+                            <div class="col-4 mb-0 ">
+                                <button class="btn  btn-info mt-2" role="button" id="addProduct">
+                                    +
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Descripción</th>
+                                        <th>Precio UN</th>
+                                        <th>Cantidad</th>
+                                        <th>Total</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="js-table-body">
+                                    </tbody>
+
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4" style="text-align: end">Total:</td>
+                                        <td>
+                                            <input class="form-control disabled" readonly
+                                                   style="width: 80px !important;"
+                                                   type="text" name="totalt" value="0.00" id="js-totalf">
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button id="btnGuardar" type="submit" class="btn btn-success">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,134 @@
+{% extends 'content.html.twig' %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Reportes</h4>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right d-none d-md-block">
+                    <form action="" method="post" style="display: inline-block">
+
+                        <button formtarget="_blank" type="submit" class="btn btn-warning waves-effect" role="button">
+                            Exportar a PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="" method="get">
+                        <div class="row align-items-center mb-2">
+                            <div class="col-md-2">
+                                <label for="">
+                                    Filtrar Entre Fechas:
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" name="date1">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" name="date2">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-secondary">Buscar</button>
+                            </div>
+
+                        </div>
+                    </form>
+                    <form method="get">
+                        <div class="row">
+                            <div class="col-md-2 align-items-center mb-4">
+                                <label for="">Filtra Unica Fecha: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" name="date3">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-secondary">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <h5 class="card-title">Salidas: </h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>O/C</th>
+                                <th>Descripción</th>
+                                <th>Unidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Cantidad</th>
+                                <th>Fecha</th>
+                                <th>Valorizacion</th>
+                            </tr>
+                            {% set totalF = 0.0 %}
+                            {% for s in salidas %}
+                                {% for d  in s.detalleSalidas %}
+                                    <tr>
+                                        <td>{{ d.product.code }}</td>
+                                        <td>{{ d.product.description }}</td>
+                                        <td>{{ d.product.measurement }}</td>
+                                        <td>{{ d.product.priceUnit }}</td>
+                                        <td>{{ d.quantity }}</td>
+                                        <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
+                                        <td>S/. {{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                {% set totalF = s.total + totalF %}
+                            {% endfor %}
+
+                            <tr>
+                                <td style="text-align: end" colspan="6">Total de Salidas</td>
+                                <td class="font-weight-bold bg-warning">S/. {{ totalF|number_format(2, '.') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <h5 class="card-title">Entradas: </h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>O/C</th>
+                                <th>Descripción</th>
+                                <th>Unidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Cantidad</th>
+                                <th>Fecha</th>
+                                <th>Valorizacion</th>
+                            </tr>
+                            {% set totalFE = 0.0 %}
+                            {% for s in entradas %}
+                                {% for d  in s.detailEntries %}
+                                    <tr>
+                                        <td>{{ d.product.code }}</td>
+                                        <td>{{ d.product.description }}</td>
+                                        <td>{{ d.product.measurement }}</td>
+                                        <td>{{ d.product.priceUnit }}</td>
+                                        <td>{{ d.quantity }}</td>
+                                        <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
+                                        <td>S/.{{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                {% set totalFE = s.total + totalF %}
+                            {% endfor %}
+
+                            <tr>
+                                <td style="text-align: end" colspan="6">Total de Salidas</td>
+                                <td class="font-weight-bold bg-warning">S/. {{ totalFE|number_format(2, '.') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

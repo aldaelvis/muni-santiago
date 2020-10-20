@@ -22,6 +22,7 @@ class ProductFormType extends AbstractType
             ->add('measurement', TextType::class, [])
             ->add('quantity', IntegerType::class, [])
             ->add('priceUnit', MoneyType::class, [
+                'currency' => 'S/.',
                 'scale' => 2,
                 'attr' => [
                     'min' => '0.00',

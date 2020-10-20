@@ -1,0 +1,95 @@
+{% extends 'content.html.twig' %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Salidas</h4>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('salida_index') }}" class="btn btn-secondary">
+                        <i class="mdi mdi-arrow-left"></i>Regresar</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="descripcion">Descripción</label>
+                                <input id="descripcion" type="text" disabled class="form-control"
+                                       value="{{ salida.name }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fecha">Fecha</label>
+                                <input id="fecha" type="text" disabled class="form-control"
+                                       value="{{ salida.date ? salida.date|date('Y-m-d') : '' }}">
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="hora">Hora</label>
+                                <input id="hora" type="text" disabled class="form-control"
+                                       value="{{ salida.date ? salida.date|date('H:i:s') : '' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Descripción</th>
+                                    <th>Precio UN</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="js-table-body">
+                                {% for key, d in salida.detalleSalidas %}
+                                    <tr>
+                                        <td>{{ key + 1 }}</td>
+                                        <td>{{ d.product.description }}</td>
+                                        <td>{{ d.product.priceUnit }}</td>
+                                        <td>{{ d.quantity }}</td>
+                                        <td>{{ d.quantity * d.product.priceUnit }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align: end">Total:</td>
+                                    <td>
+                                        <input class="form-control disabled" readonly
+                                               style="width: 80px !important;"
+                                               type="text" name="totalt" value="{{ salida.total }}" id="js-totalf">
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

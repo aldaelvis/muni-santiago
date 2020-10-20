@@ -22,6 +22,15 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="descripcion">Descripción</label>
+                                <input id="descripcion" type="text" disabled class="form-control"
+                                       value="{{ entry.name }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="fecha">Fecha</label>
@@ -44,11 +53,11 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <td>#</td>
-                                    <td>Descripción</td>
-                                    <td>Precio UN</td>
-                                    <td>Cantidad</td>
-                                    <td>Total</td>
+                                    <th>#</th>
+                                    <th>Descripción</th>
+                                    <th>Precio UN</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
                                 </tr>
                                 </thead>
 
