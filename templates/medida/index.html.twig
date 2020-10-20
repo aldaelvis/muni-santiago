@@ -1,0 +1,60 @@
+{% extends 'content.html.twig' %}
+
+{% block contenido %}
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Medidas</h4>
+            </div>
+
+            <div class="col-sm-6">
+
+                <div class="float-right d-none d-md-block">
+                    <a href="{{ path('app_medida_nuevo') }}" class="btn btn-primary waves-effect" role="button">
+                        <i class="mdi mdi-plus"></i>Nuevo
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive mb-2">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Abreviación</th>
+                                <th>Opciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key, m in medidas %}
+                                <tr>
+                                    <td>{{ key + 1 }}</td>
+                                    <td>{{ m.nombre }}</td>
+                                    <td>{{ m.abreviacion }}</td>
+                                    <td>
+                                        <a role="button" href="{{ path('app_medida_editar', {'medida': m.id}) }}"
+                                           class="btn btn-sm btn-warning">
+                                            <i class="mdi mdi-pencil-outline"></i></a>
+                                        {{ include('medida/_delete.html.twig') }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">no records found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

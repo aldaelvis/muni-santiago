@@ -31,10 +31,15 @@ class EntryController extends AbstractController
         $date1 = $request->query->get('date1');
         $date2 = $request->query->get('date2');
 
+        $descripcion = null;
+        if ($request->query->has('descripcion')) {
+            $descripcion = $request->query->get('descripcion');
+        }
+
         if (!is_null($date1) && !is_null($date2)) {
             $paginator = $entryRepository->findAllBetweenDesc($page, $date1, $date2);
         } else {
-            $paginator = $entryRepository->findAllDesc($page);
+            $paginator = $entryRepository->findAllDesc($page, $descripcion);
         }
 
         return $this->render('entry/index.html.twig', [
@@ -88,6 +93,7 @@ class EntryController extends AbstractController
                     $em->persist($entry);
                     $em->flush();
                     $em->getConnection()->commit();
+                    $this->addFlash('success', 'Se genero correctamente la sálida 😃');
                 } catch (\Exception $e) {
                     $em->getConnection()->rollBack();
                     throw $e;

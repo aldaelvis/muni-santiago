@@ -12,18 +12,21 @@
         let totalFtd = $('#js-totalf')
         let _bodyTable = document.getElementById('js-table-body')
         let addProduct = $("#addProduct");
+        let txtStock = $("#js-quantity-product");
 
         let _price = 0.0;
         let _id = 0;
+        let cantStock = 0;
 
         _dataProduct.on('change', function (e) {
             const valor = this.value
             const data = valor.split("_")
             _price = data[1];
             _id = data[0];
+            cantStock = data[2]
             txtId.val(_id)
             txtPrice.val(_price)
-
+            txtStock.val(cantStock);
             txtQuantity.focus()
         })
 
@@ -174,7 +177,7 @@
                                             id="js-product">
                                         <option selected value="">Select</option>
                                         {% for p in products %}
-                                            <option value="{{ p.id ~ '_' ~ p.priceUnit }}">{{ p.description }}</option>
+                                            <option value="{{ p.id ~ '_' ~ p.priceUnit ~ '_' ~ p.quantity }}">{{ p.description }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -205,6 +208,13 @@
                                     <label for="js-price-product">Precio</label>
                                     <input type="text" class="form-control" id="js-price-product" disabled>
                                     <input type="hidden" id="js-id-product">
+                                </div>
+                            </div>
+
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <label for="js-price-product">Stock en almacen</label>
+                                    <input type="text" class="form-control" id="js-quantity-product" readonly disabled>
                                 </div>
                             </div>
 

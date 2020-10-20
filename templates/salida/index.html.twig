@@ -42,7 +42,25 @@
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-secondary">Buscar</button>
                             </div>
+                        </div>
+                    </form>
 
+                    <form action="" method="get">
+                        <div class="row align-items-center mb-2">
+
+                            <div class="col-md-2">
+                                <label for="">
+                                    Buscar por lugar de salida (Descripción):
+                                </label>
+                            </div>
+
+                            <div class="col-md-6">
+                                <input type="search" class="form-control" name="descripcion">
+                            </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-secondary">Buscar</button>
+                            </div>
                         </div>
                     </form>
                     <div class="table-responsive mb-2">
@@ -52,6 +70,7 @@
                                 <th>#</th>
                                 <th>Fecha</th>
                                 <th>Hora</th>
+                                <th>Descripción</th>
                                 <th>Total</th>
                                 <th></th>
                             </tr>
@@ -62,6 +81,7 @@
                                     <td>{{ key + 1 }}</td>
                                     <td>{{ salida.date ? salida.date|date('d/m/Y') : '' }}</td>
                                     <td>{{ salida.date ? salida.date|date('H:i:s') : '' }}</td>
+                                    <td>{{ salida.name }}</td>
                                     <td>{{ salida.total }}</td>
                                     <td>
                                         <a class="btn btn-sm btn-info"

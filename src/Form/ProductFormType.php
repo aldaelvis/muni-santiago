@@ -4,7 +4,9 @@
 namespace App\Form;
 
 
+use App\Entity\Medida;
 use App\Entity\Product;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -17,9 +19,16 @@ class ProductFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('code', IntegerType::class, [])
+            ->add('code', IntegerType::class, [
+                'required' => false
+            ])
             ->add('description', TextType::class, [])
-            ->add('measurement', TextType::class, [])
+            ->add('medida', EntityType::class, [
+                'class' => Medida::class,
+                'choice_label' => function ($medida) {
+                    return $medida->getAbreviacion();
+                }
+            ])
             ->add('quantity', IntegerType::class, [])
             ->add('priceUnit', MoneyType::class, [
                 'currency' => 'S/.',

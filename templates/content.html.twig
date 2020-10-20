@@ -36,7 +36,7 @@
                         <div class="dropdown notification-list nav-pro-img">
                             <a class="dropdown-toggle nav-link arrow-none waves-effect nav-user" data-toggle="dropdown"
                                href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src="{{ asset('images/user-4.jpg') }}" alt="user" class="rounded-circle">
+                                <img src="{{ asset('images/user_default.png') }}" alt="user" class="rounded-circle">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                                 <a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i
@@ -70,6 +70,11 @@
                     <!-- Left Menu Start -->
                     <ul class="metismenu" id="side-menu">
                         <li class="menu-title">Main</li>
+
+                        <li>
+                            <a href="{{ path('app_medida') }}" class="waves-effect"><i class="ti-view-grid"></i><span>Medidas</span></a>
+                        </li>
+
                         <li>
                             <a href="{{ path('product_index') }}" class="waves-effect"><i class="ti-package"></i><span>Articulos</span></a>
                         </li>
@@ -125,7 +130,7 @@
             <!-- content -->
 
             <footer class="footer">
-                © {{ date()|date('Y') }} Santiago
+                © {{ date()|date('Y') }} Almacen
             </footer>
 
         </div>

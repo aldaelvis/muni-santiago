@@ -12,9 +12,11 @@
         let txtQuantity = $("#quantity");
         let txtId = $("#js-id-product");
         let txtName = $("#name");
+        let txtStock = $("#js-quantity-product");
 
         let _price = 0.0;
         let _id = 0;
+        let cantStock = 0;
 
         _sproduct.on('change', function () {
             const valor = this.value
@@ -22,8 +24,10 @@
 
             _price = data[1]
             _id = data[0]
+            cantStock = data[2]
             txtPrice.val(_price)
             txtId.val(_id);
+            txtStock.val(cantStock);
 
         })
 
@@ -195,7 +199,7 @@ onkeyup="getItem(${contador})" type="number" value="${quantity}" class="form-con
                                             id="js-product">
                                         <option value="" selected>Select</option>
                                         {% for p in products %}
-                                            <option value="{{ p.id ~ '_' ~ p.priceUnit }}">{{ p.description }}</option>
+                                            <option value="{{ p.id ~ '_' ~ p.priceUnit ~ '_' ~ p.quantity }}">{{ p.description }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -206,7 +210,7 @@ onkeyup="getItem(${contador})" type="number" value="${quantity}" class="form-con
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
-                                    <label for="name">Descripción(¿De donde ?)</label>
+                                    <label for="name">Descripción (¿De donde ?)</label>
                                     <input type="text" name="name" class="form-control" id="name">
                                 </div>
 
@@ -226,6 +230,13 @@ onkeyup="getItem(${contador})" type="number" value="${quantity}" class="form-con
                                     <label for="js-price-product">Precio</label>
                                     <input type="text" class="form-control" id="js-price-product" disabled>
                                     <input type="hidden" id="js-id-product">
+                                </div>
+                            </div>
+
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <label for="js-price-product">Stock en almacen</label>
+                                    <input type="text" class="form-control" id="js-quantity-product" readonly disabled>
                                 </div>
                             </div>
 

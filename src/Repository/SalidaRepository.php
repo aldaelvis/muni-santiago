@@ -23,13 +23,18 @@ class SalidaRepository extends ServiceEntityRepository
     /**
      * @return Paginator Returns an array of Product objects
      */
-    public function findAllDesc($page): Paginator
+    public function findAllDesc($page, $descripcion): Paginator
     {
         $qb = $this->createQueryBuilder('s')
             ->join('s.detalleSalidas', 'd')
             ->join('d.product', 'p')
             ->distinct()
             ->orderBy('s.id', 'DESC');
+
+        if (null !== $descripcion) {
+            $qb->where('s.name LIKE :descripcion')
+                ->setParameter('descripcion', '%' . $descripcion . '%');
+        }
 
         return (new Paginator($qb))->paginate($page);
     }

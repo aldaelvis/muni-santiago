@@ -24,7 +24,7 @@ class Product
 
     /**
      * @Groups("normal")
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $code;
 
@@ -33,12 +33,6 @@ class Product
      * @ORM\Column(type="string", length=255)
      */
     private $description;
-
-    /**
-     * @Groups("normal")
-     * @ORM\Column(type="string", length=10)
-     */
-    private $measurement;
 
     /**
      * @Groups("normal")
@@ -61,6 +55,11 @@ class Product
      * @ORM\OneToMany(targetEntity=DetalleSalida::class, mappedBy="product")
      */
     private $detalleSalidas;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Medida::class, inversedBy="products")
+     */
+    private $medida;
 
     public function __construct()
     {
@@ -93,18 +92,6 @@ class Product
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getMeasurement(): ?string
-    {
-        return $this->measurement;
-    }
-
-    public function setMeasurement(string $measurement): self
-    {
-        $this->measurement = $measurement;
 
         return $this;
     }
@@ -191,6 +178,18 @@ class Product
                 $detalleSalida->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMedida(): ?Medida
+    {
+        return $this->medida;
+    }
+
+    public function setMedida(?Medida $medida): self
+    {
+        $this->medida = $medida;
 
         return $this;
     }

@@ -25,6 +25,8 @@
             <div class="card">
                 <div class="card-body">
                     <form action="" method="get">
+                        <p class="text-muted">Registra aquí todos los articulos con las cuales comienza y los nuevos con un stock
+                            inicial.</p>
                         <div class="row mb-2 align-items-center">
                             <div class="col-md-2">
                                 <label for="">Buscar: </label>
@@ -57,21 +59,20 @@
                                     <td>{{ k + 1 }}</td>
                                     <td>{{ p.code }}</td>
                                     <td>{{ p.description }}</td>
-                                    <td>{{ p.measurement }}</td>
+                                    <td>{{ p.medida.abreviacion }}</td>
                                     <td>{{ p.quantity }}</td>
                                     <td>{{ p.priceUnit }}</td>
                                     <td>
                                         <a role="button" href="{{ path('product_edit', {'id': p.id}) }}"
                                            class="btn btn-sm btn-warning">
                                             <i class="mdi mdi-pencil-outline"></i></a>
-                                        {# <a href="" class="bnt btn-sm btn-danger">
-                                            <i class="fa fa-times"></i>
-                                        </a> #}
                                         {{ include('product/_delete.html.twig') }}
                                     </td>
                                 </tr>
                             {% else %}
-                                <div class="text-muted">No found records!</div>
+                               <tr>
+                                   <td colspan="7">No found records!</td>
+                               </tr>
                             {% endfor %}
                             </tbody>
                         </table>

@@ -23,13 +23,18 @@ class EntryRepository extends ServiceEntityRepository
     /**
      * @return Paginator Returns an array of Product objects
      */
-    public function findAllDesc($page): Paginator
+    public function findAllDesc($page, $descripcion): Paginator
     {
         $qb = $this->createQueryBuilder('e')
             ->join('e.detailEntries', 'd')
             ->join('d.product', 'p')
             ->distinct()
             ->orderBy('e.id', 'DESC');
+
+        if (null !== $descripcion) {
+            $qb->where('e.name LIKE :descripcion')
+                ->setParameter('descripcion', '%' . $descripcion . '%');
+        }
 
         return (new Paginator($qb))->paginate($page);
     }

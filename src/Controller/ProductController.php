@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductFormType;
+use App\Repository\MedidaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,8 +43,9 @@ class ProductController extends AbstractController
     /**
      * @Route("product/new", name="product_new")
      */
-    public function nuevo(EntityManagerInterface $entityManager, Request $request)
+    public function nuevo(EntityManagerInterface $entityManager, MedidaRepository $medidaRepository, Request $request)
     {
+        $medidas = $medidaRepository->findAll();
         $form = $this->createForm(ProductFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -56,7 +58,9 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('product_index');
         }
 
-        return $this->render('product/new.html.twig', ['form' => $form->createView()]);
+        return $this->render('product/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

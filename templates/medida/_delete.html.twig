@@ -1,0 +1,6 @@
+<form method="post" style="display: inline-block" action="{{ path('app_medida_eliminar', {'medida': m.id}) }}"
+      onsubmit="return confirm('¿Deseas realmente eliminar?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ m.id) }}">
+    <button class="btn btn-sm btn-danger" type="submit"><i class="mdi mdi-window-close"></i></button>
+</form>

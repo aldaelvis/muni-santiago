@@ -28,10 +28,15 @@ class SalidaController extends AbstractController
         $date1 = $request->query->get('date1');
         $date2 = $request->query->get('date2');
 
+        $descripcion = null;
+        if ($request->query->has('descripcion')) {
+            $descripcion = $request->query->get('descripcion');
+        }
+
         if (!is_null($date1) && !is_null($date2)) {
             $paginator = $salidaRepository->findAllBetweenDesc($page, $date1, $date2);
         } else {
-            $paginator = $salidaRepository->findAllDesc($page);
+            $paginator = $salidaRepository->findAllDesc($page, $descripcion);
         }
 
         return $this->render('salida/index.html.twig', [
