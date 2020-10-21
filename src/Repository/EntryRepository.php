@@ -64,6 +64,7 @@ class EntryRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e')
             ->join('e.detailEntries', 'd')
             ->join('d.product', 'p')
+            ->join('p.medida', 'm')
             ->orderBy('e.id', 'DESC');
 
 

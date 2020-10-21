@@ -64,6 +64,7 @@ class SalidaRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('s')
             ->join('s.detalleSalidas', 'd')
             ->join('d.product', 'p')
+            ->join('p.medida', 'm')
             ->orderBy('s.id', 'DESC');
 
         if ($date1 !== null && $date2 !== null) {
