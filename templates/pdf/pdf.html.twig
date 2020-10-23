@@ -45,7 +45,7 @@
                 <tr>
                     <td>{{ d.product.code }}</td>
                     <td>{{ d.product.description }}</td>
-                    <td>{{ d.product.measurement }}</td>
+                    <td>{{ d.product.medida.abreviacion  }}</td>
                     <td>{{ d.product.priceUnit }}</td>
                     <td>{{ d.quantity }}</td>
                     <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
@@ -82,7 +82,7 @@
                 <tr>
                     <td>{{ d.product.code }}</td>
                     <td>{{ d.product.description }}</td>
-                    <td>{{ d.product.measurement }}</td>
+                    <td>{{ d.product.medida.abreviacion }}</td>
                     <td>{{ d.product.priceUnit }}</td>
                     <td>{{ d.quantity }}</td>
                     <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
