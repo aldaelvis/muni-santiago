@@ -36,8 +36,9 @@
             <th>Precio Unit.</th>
             <th>Cantidad</th>
             <th>Fecha</th>
-            <th>Descripcion Salida</th>
+            <th>Origen</th>
             <th>Valorizacion</th>
+            <th>Firma</th>
         </tr>
         {% set totalF = 0.0 %}
         {% for s in salidas %}
@@ -45,12 +46,13 @@
                 <tr>
                     <td>{{ d.product.code }}</td>
                     <td>{{ d.product.description }}</td>
-                    <td>{{ d.product.medida.abreviacion  }}</td>
+                    <td>{{ d.product.medida.abreviacion }}</td>
                     <td>{{ d.product.priceUnit }}</td>
                     <td>{{ d.quantity }}</td>
                     <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
                     <td>{{ s.name }}</td>
                     <td>S/. {{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                    <td width="100"></td>
                 </tr>
             {% endfor %}
             {% set totalF = s.total + totalF %}
@@ -73,8 +75,9 @@
             <th>Precio Unit.</th>
             <th>Cantidad</th>
             <th>Fecha</th>
-            <th>Descripcion Entrada</th>
+            <th>Destino</th>
             <th>Valorizacion</th>
+            <th>Firma</th>
         </tr>
         {% set totalFE = 0.0 %}
         {% for s in entradas %}
@@ -88,6 +91,7 @@
                     <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
                     <td>{{ s.name }}</td>
                     <td>S/.{{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
+                    <td width="100"></td>
                 </tr>
             {% endfor %}
             {% set totalFE = s.total + totalF %}
