@@ -76,49 +76,4 @@ class ReporteController extends AbstractController
         ]);
     }
 
-
-    /**
-     * @Route ("/generate-pdf", name="app_generate_pdf")
-     * @param Pdf $pdf
-     */
-    public function downloadSpecifications(SalidaRepository $salidaRepository,
-                                           EntryRepository $entryRepository, Pdf $pdf, Request $request)
-    {
-
-        $date1 = null;
-        $date2 = null;
-        $date3 = null;
-
-        if ($request->query->has('date1')) $date3 = $request->query->get('date1');
-        if ($request->query->has('date2')) $date3 = $request->query->get('date2');
-        if ($request->query->has('date3')) $date3 = $request->query->get('date3');
-
-
-        $salidas = [];
-        $entradas = [];
-
-        /** @var Salida $salidas */
-        $salidas = $salidaRepository->findAllBetweenReporteDesc($date1, $date2, $date3);
-
-        /** @var Entry $entradas */
-        $entradas = $entryRepository->findAllBetweenReporteDesc($date1, $date2, $date3);
-
-        $html = $this->renderView('pdf/pdf.html.twig', [
-            'fecha' => $date3,
-            'fechaentre' => $date1 . '-' . $date2,
-            'salidas' => $salidas,
-            'entradas' => $entradas,
-        ]);
-        $filename = 'reporte.pdf';
-        $pdf->setTimeout(60);
-
-        return new PdfResponse(
-            $pdf->getOutputFromHtml($html),
-            200,
-            array(
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="' . $filename . '.pdf"'
-            )
-        );
-    }
 }
