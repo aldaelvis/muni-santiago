@@ -202,6 +202,7 @@ onkeyup="getItem(${contador})" type="number" value="${quantity}" class="form-con
                                             <option value="{{ p.id ~ '_' ~ p.priceUnit ~ '_' ~ p.quantity }}">{{ p.description }}</option>
                                         {% endfor %}
                                     </select>
+                                    <a href="{{ path('product_new') }}">Nuevo producto</a>
                                 </div>
                             </div>
 

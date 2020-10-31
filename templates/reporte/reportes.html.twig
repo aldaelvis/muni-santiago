@@ -109,20 +109,20 @@
                                 <th>Valorizacion</th>
                             </tr>
                             {% set totalFE = 0.0 %}
-                            {% for s in entradas %}
-                                {% for d  in s.detailEntries %}
+                            {% for e in entradas %}
+                                {% for d  in e.detailEntries %}
                                     <tr>
                                         <td>{{ d.product.code }}</td>
                                         <td>{{ d.product.description }}</td>
                                         <td>{{ d.product.medida.abreviacion }}</td>
                                         <td>{{ d.product.priceUnit }}</td>
                                         <td>{{ d.quantity }}</td>
-                                        <td>{{ s.name }}</td>
-                                        <td>{{ s.date ? s.date|date('d/m/Y H:i:s') : '' }}</td>
+                                        <td>{{ e.name }}</td>
+                                        <td>{{ e.date ? e.date|date('d/m/Y H:i:s') : '' }}</td>
                                         <td>S/.{{ (d.product.priceUnit * d.quantity)|number_format(2, '.') }}</td>
                                     </tr>
                                 {% endfor %}
-                                {% set totalFE = s.total + totalF %}
+                                {% set totalFE = e.total + totalFE %}
                             {% endfor %}
 
                             <tr>

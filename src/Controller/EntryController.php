@@ -93,7 +93,7 @@ class EntryController extends AbstractController
                     $em->persist($entry);
                     $em->flush();
                     $em->getConnection()->commit();
-                    $this->addFlash('success', 'Se genero correctamente la sálida 😃');
+                    $this->addFlash('success', 'Se genero correctamente la Entrada 😃');
                 } catch (\Exception $e) {
                     $em->getConnection()->rollBack();
                     throw $e;
